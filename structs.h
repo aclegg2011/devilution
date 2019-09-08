@@ -20,7 +20,7 @@ typedef struct PLStruct {
 	int PLParam2;
 	char PLMinLvl;
 	int PLIType;
-	int PLGOE;
+	BYTE PLGOE;
 	BOOL PLDouble;
 	BOOL PLOk;
 	int PLMinVal;
@@ -1232,7 +1232,7 @@ typedef struct _uiheroinfo {
 	WORD vitality;
 	int gold;
 	int hassaved;
-	int spawned;
+	BOOL spawned;
 } _uiheroinfo;
 
 // TPDEF PTR FCN UCHAR ENUMHEROPROC

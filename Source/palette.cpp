@@ -112,12 +112,14 @@ void LoadPalette(char *pszFileName)
 
 void LoadRndLvlPal(int l)
 {
+	int rv;
 	char szFileName[MAX_PATH];
 
 	if (l == DTYPE_TOWN) {
 		LoadPalette("Levels\\TownData\\Town.pal");
 	} else {
-		sprintf(szFileName, "Levels\\L%iData\\L%i_%i.PAL", l, l, random(0, 4) + 1);
+		rv = random(0, 4) + 1;
+		sprintf(szFileName, "Levels\\L%iData\\L%i_%i.PAL", l, l, rv);
 		LoadPalette(szFileName);
 	}
 }
@@ -269,6 +271,7 @@ void palette_update_caves()
 	palette_update();
 }
 
+#ifndef SPAWN
 void palette_update_quest_palette(int n)
 {
 	int i;
@@ -279,6 +282,7 @@ void palette_update_quest_palette(int n)
 	ApplyGamma(system_palette, logical_palette, 32);
 	palette_update();
 }
+#endif
 
 BOOL palette_get_colour_cycling()
 {

@@ -152,7 +152,7 @@ char *PanBtnStr[8] = {
 	"Send Message",
 	"Player Attack"
 };
-RECT32 attribute_inc_rects[4] = {
+RECT32 ChrBtnsRect[4] = {
 	{ 137, 138, 41, 22 },
 	{ 137, 166, 41, 22 },
 	{ 137, 195, 41, 22 },
@@ -379,7 +379,7 @@ void DrawSpellList()
 	int i, j, x, y, c, s, t, v, lx, ly, trans;
 	unsigned __int64 mask, spl;
 
-	pSpell = -1;
+	pSpell = SPL_INVALID;
 	infostr[0] = '\0';
 	x = 636;
 	y = 495;
@@ -1173,10 +1173,12 @@ void InitControlPan()
 	sbookflag = FALSE;
 	if (plr[myplr]._pClass == PC_WARRIOR) {
 		SpellPages[0][0] = SPL_REPAIR;
+#ifndef SPAWN
 	} else if (plr[myplr]._pClass == PC_ROGUE) {
 		SpellPages[0][0] = SPL_DISARM;
 	} else if (plr[myplr]._pClass == PC_SORCERER) {
 		SpellPages[0][0] = SPL_RECHARGE;
+#endif
 	}
 	pQLogCel = LoadFileInMem("Data\\Quest.CEL", NULL);
 	pGBoxBuff = LoadFileInMem("CtrlPan\\Golddrop.cel", NULL);
@@ -1222,7 +1224,7 @@ void DoSpeedBook()
 	yo = 495;
 	X = 600;
 	Y = 307;
-	if (plr[myplr]._pRSpell != -1) {
+	if (plr[myplr]._pRSpell != SPL_INVALID) {
 		for (i = 0; i < 4; i++) {
 			switch (i) {
 			case RSPLTYPE_SKILL:
@@ -1355,7 +1357,7 @@ void CheckPanelInfo()
 		strcpy(tempstr, "Hotkey : 's'");
 		AddPanelString(tempstr, TRUE);
 		v = plr[myplr]._pRSpell;
-		if (v != -1) {
+		if (v != SPL_INVALID) {
 			switch (plr[myplr]._pRSplType) {
 			case RSPLTYPE_SKILL:
 				sprintf(tempstr, "%s Skill", spelldata[v].sSkillText);
@@ -1665,10 +1667,12 @@ void DrawChr()
 
 	if (plr[myplr]._pClass == PC_WARRIOR) {
 		ADD_PlrStringXY(168, 32, 299, "Warrior", COL_WHITE);
+#ifndef SPAWN
 	} else if (plr[myplr]._pClass == PC_ROGUE) {
 		ADD_PlrStringXY(168, 32, 299, "Rogue", COL_WHITE); /* should use ClassStrTbl ? */
 	} else if (plr[myplr]._pClass == PC_SORCERER) {
 		ADD_PlrStringXY(168, 32, 299, "Sorceror", COL_WHITE);
+#endif
 	}
 
 	sprintf(chrstr, "%i", plr[myplr]._pLevel);
@@ -1971,10 +1975,10 @@ void CheckChrBtns()
 			default:
 				continue;
 			}
-			if (MouseX >= attribute_inc_rects[i].x
-			    && MouseX <= attribute_inc_rects[i].x + attribute_inc_rects[i].w
-			    && MouseY >= attribute_inc_rects[i].y
-			    && MouseY <= attribute_inc_rects[i].y + attribute_inc_rects[i].h) {
+			if (MouseX >= ChrBtnsRect[i].x
+			    && MouseX <= ChrBtnsRect[i].x + ChrBtnsRect[i].w
+			    && MouseY >= ChrBtnsRect[i].y
+			    && MouseY <= ChrBtnsRect[i].y + ChrBtnsRect[i].h) {
 				chrbtn[i] = 1;
 				chrbtnactive = TRUE;
 			}
@@ -1990,10 +1994,10 @@ void ReleaseChrBtns()
 	for (i = 0; i < 4; ++i) {
 		if (chrbtn[i]) {
 			chrbtn[i] = 0;
-			if (MouseX >= attribute_inc_rects[i].x
-			    && MouseX <= attribute_inc_rects[i].x + attribute_inc_rects[i].w
-			    && MouseY >= attribute_inc_rects[i].y
-			    && MouseY <= attribute_inc_rects[i].y + attribute_inc_rects[i].h) {
+			if (MouseX >= ChrBtnsRect[i].x
+			    && MouseX <= ChrBtnsRect[i].x + ChrBtnsRect[i].w
+			    && MouseY >= ChrBtnsRect[i].y
+			    && MouseY <= ChrBtnsRect[i].y + ChrBtnsRect[i].h) {
 				switch (i) {
 				case 0:
 					NetSendCmdParam1(TRUE, CMD_ADDSTR, 1);
@@ -2634,7 +2638,7 @@ void control_press_enter()
 		}
 		if (i >= 8) {
 			strcpy(sgszTalkSave[sgbNextTalkSave], sgszTalkMsg);
-			sgbNextTalkSave = sgbNextTalkSave + 1;
+			sgbNextTalkSave++;
 			sgbNextTalkSave &= 7;
 		} else {
 			talk_save = sgbNextTalkSave - 1;

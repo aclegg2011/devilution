@@ -120,13 +120,18 @@ void DRLG_Init_Globals()
 	memset(dItem, 0, sizeof(dItem));
 	memset(dMissile, 0, sizeof(dMissile));
 	memset(dArch, 0, sizeof(dArch));
-	if (!lightflag)
-		c = (light4flag) ? 3 : 15;
-	else
+	if (!lightflag) {
+		if (light4flag)
+			c = 3;
+		else
+			c = 15;
+	} else {
 		c = 0;
+	}
 	memset(dLight, c, sizeof(dLight));
 }
 
+#ifndef SPAWN
 void LoadL1Dungeon(char *sFileName, int vx, int vy)
 {
 	int i, j, rw, rh;
@@ -175,6 +180,7 @@ void LoadL1Dungeon(char *sFileName, int vx, int vy)
 	SetMapObjects(pLevelMap, 0, 0);
 	mem_free_dbg(pLevelMap);
 }
+#endif
 
 void DRLG_L1Floor()
 {
@@ -323,6 +329,7 @@ void DRLG_InitL1Vals()
 	}
 }
 
+#ifndef SPAWN
 void LoadPreL1Dungeon(char *sFileName, int vx, int vy)
 {
 	int i, j, rw, rh;
@@ -370,6 +377,7 @@ void LoadPreL1Dungeon(char *sFileName, int vx, int vy)
 
 	mem_free_dbg(pLevelMap);
 }
+#endif
 
 void CreateL5Dungeon(DWORD rseed, int entry)
 {
@@ -611,10 +619,8 @@ void DRLG_L1Shadows()
 							dungeon[x - 1][y - 1] = SPATS[i].nv1;
 						if (SPATS[i].nv2 && !L5dflags[x][y - 1])
 							dungeon[x][y - 1] = SPATS[i].nv2;
-						if (SPATS[i].nv3) {
-							if (!L5dflags[x - 1][y])
-								dungeon[x - 1][y] = SPATS[i].nv3;
-						}
+						if (SPATS[i].nv3 && !L5dflags[x - 1][y])
+							dungeon[x - 1][y] = SPATS[i].nv3;
 					}
 				}
 			}

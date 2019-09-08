@@ -455,13 +455,15 @@ void InitThemes()
 void HoldThemeRooms()
 {
 	int i, x, y;
+	char v;
 
 	if (currlevel != 16) {
 		if (leveltype == DTYPE_CATHEDRAL) {
 			for (i = 0; i < numthemes; i++) {
+				v = themes[i].ttval;
 				for (y = 0; y < MAXDUNY; y++) {
 					for (x = 0; x < MAXDUNX; x++) {
-						if (dTransVal[x][y] == (char)themes[i].ttval) {
+						if (dTransVal[x][y] == v) {
 							dFlags[x][y] |= BFLAG_POPULATED;
 						}
 					}
@@ -517,8 +519,11 @@ void Theme_Barrel(int t)
 		for (xp = 0; xp < MAXDUNX; xp++) {
 			if (dTransVal[xp][yp] == themes[t].ttval && !nSolidTable[dPiece[xp][yp]]) {
 				if (random(0, barrnd[leveltype - 1]) == 0) {
-					r = random(0, barrnd[leveltype - 1]) != 0;
-					r += OBJ_BARREL;
+					if (random(0, barrnd[leveltype - 1]) == 0) {
+						r = OBJ_BARREL;
+					} else {
+						r = OBJ_BARRELEX;
+					}
 					AddObject(r, xp, yp);
 				}
 			}
@@ -725,9 +730,12 @@ void Theme_Library(int t)
 		}
 	}
 
-	if (!QuestStatus(QTYPE_ZHAR)) {
+	if (QuestStatus(QTYPE_ZHAR)) {
+		if (t == zharlib) {
+			return;
+		}
 		PlaceThemeMonsts(t, monstrnd[leveltype]); /// BUGFIX: `leveltype - 1`
-	} else if (t != zharlib) {
+	} else {
 		PlaceThemeMonsts(t, monstrnd[leveltype]); /// BUGFIX: `leveltype - 1`
 	}
 }
